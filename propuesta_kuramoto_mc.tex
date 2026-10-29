@@ -1,0 +1,234 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Conectividad crítica para la sincronización global en el modelo de Kuramoto},
+ %   pdfpagemode=FullScreen,
+    }
+
+
+\setlist{itemsep=1pt, topsep=2pt}
+
+\title{\vspace{-2.5em}Conectividad crítica para la sincronización global en el modelo de Kuramoto\\[4pt]
+\large y su equivalencia con el problema de completación de matrices}
+\author{Propuesta de problema}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2em}
+
+\section*{El problema}
+
+El problema de sincronización es muy relevante en ciencia y tecnología; una introducción amena es el libro \emph{Sync} de Strogatz \cite{strogatz-sync} y este video divulgativo: \url{https://youtu.be/t-_VPRCtiUg}. El modelo de Kuramoto es un sistema paradigmático de osciladores acoplados idénticos que sirve para modelarlo. Dado un grafo finito simple $G=(V,E)$ con $n=|V|$ vértices y matriz de adyacencia $(w_{uv})$, se asigna una fase $\theta_v \in \mathbb{T} = (-\pi,\pi]$ (con los extremos identificados) a cada vértice. La dinámica es el flujo gradiente negativo de la energía
+\[
+\mathcal{E}_G(\theta) \;=\; \tfrac{1}{2}\sum_{u,v\in V} w_{uv}\bigl(1-\cos(\theta_u-\theta_v)\bigr).
+\]
+Los minimizadores globales de $\mathcal{E}_G$ son los estados completamente sincronizados ($\theta_u=\theta_v$ para todo $u,v$). Se dice que $G$ \emph{sincroniza globalmente} si estos son sus únicos mínimos locales.
+
+Es natural especular que alta conectividad está asociada a sincronización global y por lo tanto preguntarse: ¿cuánto grado mínimo necesita $G$ para garantizar sincronización global, independientemente del resto de la estructura?
+
+Definiendo la conectividad normalizada
+\[
+\mu(G) \;=\; \frac{\min_{v\in V}\deg(v) + 1}{n},
+\]
+la \emph{conectividad crítica} del problema es\footnote{Parte de la literatura normaliza con $\deg(v)/(n-1)$ en lugar de $(\deg(v)+1)/n$. Las dos convenciones difieren en $O(1/n)$ y definen el mismo ínfimo, pero conviene tenerlo presente al comparar cotas entre papers.}
+\[
+\mu_c \;=\; \inf\bigl\{\mu\in[0,1] \;:\; \text{todo grafo finito simple $G$ con }\mu(G)\ge \mu\text{ sincroniza globalmente}\bigr\}.
+\]
+A priori, el conjunto definido arriba podría ser vacío (veremos que no lo es). El problema abierto es determinar $\mu_c$.
+
+\paragraph{Estado del arte.}
+Las cotas superiores (``conectividad alta implica sincronización'') provienen de análisis local de los puntos críticos:
+\begin{itemize}
+    \item Ejercicio para el lector\footnote{Demostrar a mano que el grafo completo $K_n$ sincroniza globalmente. Sug.: en $K_n$ la energía se escribe
+    \[
+    \mathcal{E}_{K_n}(\theta) \;=\; \frac{n^2}{2}\bigl(1 - |r(\theta)|^2\bigr),
+    \qquad
+    r(\theta) \;=\; \frac{1}{n}\sum_{u\in V} e^{i\theta_u},
+    \]
+    donde $r$ es el \emph{parámetro de orden}, así que el flujo gradiente maximiza
+    $|r|^2$ y el análisis de los puntos críticos se hace a mano.} $\mu_c\le 1$ (cualquier grafo completo se sincroniza globalmente);
+    \item Taylor (2012) \cite{taylor2012}: $\mu_c \le 0{.}9395$;
+    \item Ling, Xu, Bandeira (2019) \cite{ling2019}: $\mu_c \le 0{.}7929$;
+    \item Lu, Steinerberger (2020) \cite{lu-steinerberger}: $\mu_c \le 0{.}7889$;
+    \item Kassabov, Strogatz, Townsend (2021) \cite{kst2021}: $\mu_c \le 3/4$;
+    \item {Lepsveridze, Zhang (agosto 2026)} \cite{lepsveridze-zhang}: $\mu_c \le 3/4 - \eta$, para una constante absoluta $\eta>0$.
+\end{itemize}
+Las cotas inferiores (``existe un grafo denso que no sincroniza'') se obtienen construyendo explícitamente grafos con mínimos locales no triviales (estados ``twisted''):
+\begin{itemize}
+    \item Townsend, Stillman, Strogatz (2020) \cite{tss2020}: $\mu_c \ge 0{.}6828$ (grafos circulantes);
+    \item Yoneda, Tatsukawa, Teramae (2021) \cite{yoneda2021}: $\mu_c \ge 0{.}6838$ (optimización de twisted states);
+    \item Canale (2022) \cite{canale2022}: $\mu_c \ge 11/16 = 0{.}6875$ (construcción no circulante).
+\end{itemize}
+El resultado reciente de Lepsveridze y Zhang \cite{lepsveridze-zhang} refuta la conjetura de que $\mu_c = 3/4$, formulada en \cite{bkmr2025}. Una línea paralela estudia la sincronización de grafos aleatorios y expansores \cite{abdalla2022}, que sincronizan con conectividad muchísimo menor: la dificultad de $\mu_c$ está en el \emph{peor caso}, no en el caso típico. El estado actual (octubre 2026) es
+\[
+\boxed{\;\dfrac{11}{16}\;\le\;\mu_c\;\le\;\dfrac{3}{4}-\eta\;<\;0{.}75\;}
+\]
+y el intervalo permanece abierto. El objetivo del proyecto es contribuir a estrecharlo u obtener algún tipo de información acerca del mismo.
+
+El uso de inteligencia artificial está permitido y es bienvenido en todas las etapas del trabajo; su declaración detallada y transparente es \emph{obligatoria} (ver la sección ``Uso de inteligencia artificial'').
+
+\paragraph{Prerrequisitos y calentamiento.}
+El proyecto requiere manejo básico de ecuaciones diferenciales ordinarias (equilibrios y estabilidad), álgebra lineal (autovalores, Hessiano), nociones elementales de grafos, y programación científica (Python o Julia). Los artículos de referencia están en inglés. Como ejercicio de entrada, antes de elegir una dirección de trabajo, se sugiere:
+\begin{enumerate}
+    \item Simular el flujo gradiente de $\mathcal{E}_G$ en el grafo completo $K_n$ desde condiciones iniciales aleatorias y verificar que siempre sincroniza.
+    \item Hacer lo mismo en el ciclo $C_n$ ($n\ge 5$) y encontrar numéricamente los estados \emph{twisted} estables $\theta_v = 2\pi q v/n$; verificar su estabilidad calculando el espectro del Hessiano.
+    \item Construir el grafo $C_{n,k}$ aumentando el conjunto de aristas de $C_n$: cada nodo se declara vecino (en $C_{n,k}$) de sus $k$ vecinos más cercanos de cada lado (en $C_n$), de modo que cada nodo tiene grado $2k$ y $C_{n,1}=C_n$. Observar que los twisted states son también equilibrios en $C_{n,k}$. Determinar numéricamente el máximo valor de $k$ tal que al menos uno de los twisted states hallados en el ítem anterior es estable (Sug.: los ``más estables'' son los que corresponden a $q=\pm 1$).
+\end{enumerate}
+Un equipo que completa este calentamiento ya tiene el pipeline básico (simulador + test de estabilidad) sobre el que se construyen todas las direcciones siguientes.
+
+
+
+\section*{Direcciones de trabajo}
+
+El problema admite ataques teóricos, computacionales y mixtos. Para un proyecto de 3 semanas, es más eficiente apuntar a aportes modestos y concretos que a resolver el problema completo. Para la mayoría de los equipos recomendamos empezar por la dirección A (búsqueda computacional) o la E (exposición creativa); la B es la más exigente, y la C y la D convienen a equipos con inclinación analítica.
+
+\paragraph{A. Buscar nuevas familias de grafos que no sincronicen.}
+Cualquier grafo $G$ con $\mu(G) > 11/16$ que admita un mínimo local no sincronizado (certificado rigurosamente) mejora la cota inferior. Si no hay certificado riguroso pero hay buenos indicios, también es muy valioso. Las construcciones conocidas son esencialmente circulantes (una familia que generaliza los $C_{n,k}$ del calentamiento) y productos lexicográficos de ellas. Posibles vías:
+\begin{itemize}
+    \item \textbf{Búsqueda exhaustiva + verificación numérica.} Enumerar grafos pequeños ($n$ del orden de $10$--$15$) con $11/16 < \mu(G) < 3/4$ usando \texttt{nauty}\footnote{\texttt{nauty} (B.~McKay, 1981) es la biblioteca estándar para enumerar grafos no isomorfos y testear isomorfismo. Permite generar un representante por clase de isomorfismo directamente, evitando enumerar los $2^{\binom{n}{2}}$ grafos etiquetados.} y chequear la existencia de mínimos locales no sincronizados simulando el flujo gradiente desde muchas condiciones iniciales u otros mecanismos.
+%     Puede ser conveniente generar los complementos $\bar G$ (el grafo formado por las aristas que le faltan a $G$), que son ralos: tienen grado máximo a lo sumo $(1-\mu)n$, una restricción que el generador \texttt{geng} aprovecha mucho mejor que una cota inferior para el grado mínimo. Además, sólo interesan los $n$ para los que existe un entero $\delta$ con $(\delta+1)/n \in (11/16,\,3/4)$.
+
+    \emph{Dos advertencias.} Primero, antes de comprometerse con un rango de $n$, estimar el tamaño de la búsqueda con \texttt{geng -u} (que sólo cuenta): la cantidad de clases de isomorfismo crece ferozmente y para $n=14,15$ puede resultar inviable en computadoras personales. Segundo, los mínimos no sincronizados conocidos son esencialmente estados twisted, que necesitan suficiente ``circunferencia'' para enrollarse; con $n\le 15$ y grado mínimo $\ge 0{.}69\,n$ es muy plausible que no existan contraejemplos, y el resultado esperable de esta vía es \emph{negativo}. Ese resultado negativo, bien documentado, vale por sí mismo, y el pipeline construido se reutiliza directamente en las vías estocásticas sobre $n$ grandes, donde sí hay esperanza de encontrar algo nuevo.
+    \item \textbf{Búsqueda estocástica.} Algoritmos genéticos, simulated annealing o hill climbing en el espacio de grafos, con función objetivo que combine $\mu(G)$ y evidencia de no sincronización.
+    \item \textbf{Reinforcement learning.} Entrenar un agente que agregue y quite aristas con la recompensa adecuada. El trabajo de Wagner \cite{wagner2021} muestra que RL puede descubrir contraejemplos combinatorios no triviales.
+    \item \textbf{Graph Neural Networks.} Entrenar una GNN sobre grafos pequeños etiquetados (sincroniza / no sincroniza) y usarla como heurística rápida para guiar una búsqueda más amplia.
+    \item \textbf{Operaciones de producto.} Explorar sistemáticamente productos (lex, strong, zig-zag) sobre un catálogo de grafos base: circulantes, grafos de Cayley de grupos no abelianos, grafos distance-regular.
+\end{itemize}
+
+\paragraph{B. Explicitar la constante $\eta$ de Lepsveridze–Zhang (vía difícil, opcional).}
+Los autores de \cite{lepsveridze-zhang} afirman que un valor explícito de $\eta$ es derivable de su prueba pero no lo persiguen. \emph{Advertencia}: esta vía exige digerir un artículo de investigación reciente y perseguir constantes a lo largo de un argumento fino; es una dirección exigente y probablemente exceda las 3 semanas si se la toma completa. Una versión acotada y razonable: elegir \emph{una} sección del argumento y cuantificar las constantes de esa sección, o diseñar algoritmos que las estimen numéricamente.
+
+\paragraph{C. Entender la geometría de los obstáculos cerca de $3/4$.}
+El artículo \cite{lepsveridze-zhang} demuestra que, cerca de $3/4$, el único obstáculo posible es un ``clustering en cuatro grupos'' alrededor de $\{0,\pi/2,\pi,3\pi/2\}$. Preguntas naturales que pueden abordarse analíticamente o por simulación:
+\begin{itemize}
+    \item ¿Hasta qué valor de $\mu(G)$ puede existir un mínimo local estable con $\ell$ clusters, $\ell=2,3,5,\dots$?
+    \item ¿Qué pasa si los clusters no son equidistantes? ¿Qué pasa con configuraciones casi-twisted con winding $\ge 2$?
+\end{itemize}
+
+\paragraph{D. Variantes y extensiones.}
+\begin{itemize}
+    \item \textbf{Grafos ponderados.} Permitir pesos $w_{uv}\in[0,1]$ amplía el espacio de búsqueda. Canale \cite{canale2022} ya usa esta idea para su cota $11/16$.
+%     \item \textbf{Modelo continuo.} Reemplazar grafos finitos por grafones o grafos geométricos aleatorios en $\mathbb{S}^d$. Hay resultados recientes sobre RGG en $\mathbb{S}^1$ que admiten estados twisted estables con $\mu\to 0{.}681$ en el límite continuo.
+      \item \textbf{Restricción a subfamilias.} Conseguir cotas para $\mu_c$ cuando uno se restringe a subfamilias de grafos.
+    \item \textbf{Modelo con desfases (Kuramoto–Sakaguchi).} Admite más equilibrios y puede dar intuición sobre el caso puro.
+\end{itemize}
+
+\paragraph{E. Explicaciones creativas.} Exposiciones creativas sobre el modelo de Kuramoto y/o algunas de sus aplicaciones, completación de matrices o sistemas de recomendación. Explicaciones de alguno de los resultados conocidos sobre sincronización global / paisaje benigno o cualquier otro aspecto del problema. También re-interpretaciones y demostraciones alternativas o simplificadas de resultados conocidos (por ejemplo, de la cota de Taylor \cite{taylor2012}, la más accesible de la lista), en el espíritu del \emph{Mathathon}\footnote{Ver el comunicado conjunto sobre el Mathathon 2026: \url{https://proofsandprompts.com/2026/09/28/joint-statement-about-mathathon/}, una competencia organizada bajo el lema ``Old Problems, New Proofs'', donde la comprensión y la exposición matemática valen tanto como la resolución de problemas.}. El material explicativo puede adoptar cualquier formato: un artículo, una entrada de blog, un video, un juego interactivo, etcétera. Por ejemplo, puede elaborarse una explicación creativa del vínculo entre el problema de sincronización y el de completación de matrices y recomendaciones. O cualquier otro aspecto en el que se desee profundizar.
+
+\section*{Qué se entrega y cómo se evalúa}
+
+\paragraph{Formato de entrega.}
+Cada equipo entrega tres piezas:
+\begin{enumerate}
+    \item \textbf{Informe escrito}, de a lo sumo 5 páginas: qué se intentó, qué se obtuvo, y la distinción explícita entre lo demostrado y lo conjeturado con evidencia numérica. El informe debe incluir, como sección \emph{obligatoria}, la \textbf{declaración de uso de IA}, transparente y detallada: qué herramientas se usaron, para qué tareas y con qué prompts relevantes.
+    \item \textbf{Repositorio} con el código reproducible, los experimentos, y los historiales de interacción con modelos de lenguaje (LLM) que hayan contribuido al resultado, incluyendo el material usado para elaborar exposiciones (código de visualizaciones, etcétera).
+    \item \textbf{Póster y presentación de 15 minutos} ante el jurado.
+\end{enumerate}
+El póster y la presentación comunican; el informe y el repositorio son los que permiten completar la evaluación. No es obligatorio producir material para el punto 2. En caso de no haber producido material correspondiente a dicho punto, simplemente no se entrega, pero debe explicitarse el no uso de IA en ese caso.
+
+\textbf{Todas las piezas de la entrega deben estar en el respositorio creado a tal efecto.}
+
+\paragraph{Qué cuenta como resultado.}
+Se distinguen tres tipos de contribución. Todos valiosos, y cualquiera de ellos puede ganar el primer puesto:
+\begin{itemize}
+    \item \textbf{Resultados rigurosos} (difícil). Para \emph{mejorar la cota inferior} rigurosamente no alcanza con evidencia numérica: hace falta encontrar un candidato a mínimo local y un certificado de que la configuración hallada es un mínimo local no sincronizado (Hessiano definido positivo en el ortogonal a la rotación global ---todo equilibrio tiene al menos un autovalor nulo, el de la rotación, así que ``semidefinido positivo'' a secas no certifica nada---, o bien una configuración con forma cerrada, como ocurre en los grafos circulantes). (De todos modos, encontrar un candidato a mínimo local sería muy valioso.) Simétricamente, el flujo gradiente desde muchas condiciones iniciales puede no visitar mínimos con base de atracción chica, de modo que ``no encontramos mínimos espurios'' \emph{no} certifica que un grafo sincroniza globalmente.
+    \item \textbf{Resultados heurísticos y computacionales.} Los hallazgos vía simulación, búsqueda estocástica o aprendizaje automático son muy valiosos y serán valorados aunque no vengan acompañados de una prueba rigurosa: un grafo candidato con fuerte evidencia numérica de no sincronización, una conjetura respaldada por experimentos sistemáticos, o un resultado negativo bien documentado (``no hay contraejemplo con $n\le 14$ en tal clase de grafos'') son contribuciones genuinas al problema. Lo que se pide es honestidad metodológica: reportar con claridad qué está demostrado, qué es evidencia numérica y con qué confianza.
+    \item \textbf{Exposiciones y pruebas novedosas.} El material creativo de la dirección E: re-interpretaciones, demostraciones alternativas o simplificadas, y explicaciones novedosas de los resultados conocidos, en cualquier formato.
+\end{itemize}
+
+\paragraph{Niveles de logro.}
+Para calibrar expectativas, los entregables posibles en 3 semanas se ordenan en tres niveles. Nadie espera el nivel excepcional; si ocurre, es un resultado de investigación genuino.
+\begin{itemize}
+    \item \textbf{Nivel básico.} Direcciones A--D: un pipeline reproducible que simula el flujo gradiente, detecta equilibrios, testea estabilidad vía Hessiano, y reproduce los resultados conocidos (twisted states en ciclos y circulantes, construcción de Canale con $\mu = 11/16$). Dirección E: una explicación correcta y clara de lo ya conocido.
+    \item \textbf{Nivel esperado.} Direcciones A--D: una búsqueda sistemática documentada en algún régimen (exhaustiva en $n$ chico, estocástica o por productos en $n$ grande), con sus conclusiones —positivas o negativas—, un conjunto de grafos candidatos con su análisis Hessiano, o resultados parciales sobre alguna de las direcciones B--D. Dirección E: una exposición original con visualizaciones o simulaciones propias.
+    \item \textbf{Nivel excepcional.} Direcciones A--D: una mejora de la cota inferior con certificado riguroso, un valor explícito (aunque sea parcial) o una cota para $\eta$, o un resultado analítico nuevo sobre la geometría de los obstáculos. Dirección E: una reinterpretación, o una demostración alternativa o simplificada, de un resultado conocido, o una forma excepcionalmente novedosa de presentar algún aspecto del problema.
+\end{itemize}
+
+\paragraph{Criterios de evaluación.}
+Se valorará, en este orden aproximado: (i) la corrección y claridad del informe final, incluyendo la distinción explícita entre lo demostrado y lo conjeturado con evidencia numérica; (ii) la profundidad del aporte en la dirección elegida, donde un resultado negativo sistemático y bien documentado vale tanto como uno positivo de alcance similar o como una gran exposición; (iii) la reproducibilidad del código y de los experimentos; (iv) la originalidad del enfoque. Los resultados heurísticos y de simulación serán plenamente valorados aunque no estén acompañados de pruebas rigurosas, al igual que las explicaciones y exposiciones creativas. El uso de IA es libre, pero su declaración precisa y transparente es obligatoria; la omisión o la declaración engañosa de ese uso sí afecta la evaluación.
+
+\paragraph{Uso de inteligencia artificial.}
+Se puede usar IA libremente, para todo lo que quieran y en cualquier etapa del trabajo: explorar ideas, programar, buscar bibliografía, realizar desarrollos matemáticos, redactar o producir material expositivo. O cualquier otro uso que se le quiera dar. La contrapartida es \emph{obligatoria}: declarar ese uso de forma transparente y detallada en la sección correspondiente del informe (ver ``Formato de entrega'') e incluir en el repositorio los historiales de interacción que hayan contribuido al resultado. No se penaliza el uso de IA; se penaliza no declararlo. Lo que se evalúa, en última instancia, es la comprensión demostrada por el equipo sobre el material que entrega.
+
+Aprovechamos además esta instancia como \emph{prueba piloto}: una exploración de cómo hacer y cómo evaluar ciencia en la nueva era que nos impone la IA. Parte del valor del proyecto está en documentar honestamente ese proceso --qué funcionó, qué no, dónde la IA ayudó y dónde estorbó--, y esa documentación es en sí misma un aporte bienvenido.
+
+\paragraph{Mentores}
+\begin{itemize}
+ \item Ciro Carvallo
+ \item Cecilia De Vita
+ \item Pablo Groisman
+% \item Laura Pardina
+ \item Juan Ignacio Fiore
+ \item Victoria Perez Ruiz
+ \item Fernando Perazzo
+ \item Ian Bounos
+% \item Sebastián Zaninovich
+\end{itemize}
+
+\paragraph{Jurado}
+\begin{itemize}
+ \item Ciro Carvallo
+ \item Pablo Groisman
+ \item Fernando Perazzo
+ \item Sebastián Zaninovich
+\end{itemize}
+
+
+\begin{thebibliography}{99}
+\bibitem{strogatz-sync} S.~H. Strogatz, \emph{Sync: The Emerging Science of Spontaneous Order}, Hyperion, 2003.
+\bibitem{taylor2012} R.~Taylor, \emph{There is no non-zero stable fixed point for dense networks in the homogeneous Kuramoto model}, J.\ Phys.\ A: Math.\ Theor.\ 45 (2012), 055102.
+\bibitem{ling2019} S.~Ling, R.~Xu, A.~S. Bandeira, \emph{On the landscape of synchronization networks: a perspective from nonconvex optimization}, SIAM J.\ Optim.\ 29 (2019), 1879--1907.
+\bibitem{lu-steinerberger} J.~Lu, S.~Steinerberger, \emph{Synchronization of Kuramoto oscillators in dense networks}, arXiv:1911.12336 (2020).
+\bibitem{kst2021} M.~Kassabov, S.~H. Strogatz, A.~Townsend, \emph{Sufficiently dense Kuramoto networks are globally synchronizing}, Chaos 31 (2021), 073135.
+\bibitem{tss2020} A.~Townsend, M.~Stillman, S.~H. Strogatz, \emph{Dense networks that do not synchronize and sparse ones that do}, Chaos 30 (2020), 083142.
+\bibitem{yoneda2021} R.~Yoneda, T.~Tatsukawa, J.~Teramae, \emph{The lower bound of the network connectivity guaranteeing in-phase synchronization}, Chaos 31 (2021), 063124.
+\bibitem{canale2022} E.~A. Canale, \emph{From weighted to unweighted graphs in synchronizing graph theory}, \href{https://arxiv.org/abs/2209.06362}{arXiv:2209.06362} (2022).
+\bibitem{bkmr2025} A.~S. Bandeira et al., \emph{Randomstrasse101: Open Problems of 2024}, \href{https://arxiv.org/abs/2504.20539}{arXiv:2504.20539} (2025). La conjetura $\mu_c = 3/4$ es la Conjetura 5.
+\bibitem{abdalla2022} P.~Abdalla, A.~S. Bandeira, M.~Kassabov, V.~Souza, S.~H. Strogatz, A.~Townsend, \emph{Expander graphs are globally synchronising}, arXiv:2210.12788 (2022).
+\bibitem{lepsveridze-zhang} G.~Lepsveridze, Y.~Zhang, \emph{Graphs with connectivity $3/4-\varepsilon$ are globally synchronizing}, \href{https://arxiv.org/abs/2608.20010}{arXiv:2608.20010} (2026).
+\bibitem{candes-recht} E.~J. Candès, B.~Recht, \emph{Exact matrix completion via convex optimization}, Found.\ Comput.\ Math.\ 9 (2009), 717--772.
+\bibitem{wagner2021} A.~Z. Wagner, \emph{Constructions in combinatorics via neural networks}, arXiv:2104.14516 (2021).
+\end{thebibliography}
+
+\newpage
+
+\section*{Apéndice: equivalencia con un problema de \emph{matrix completion}}
+\setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}
+
+\paragraph{Matrix completion.} El problema consiste en reconstruir una matriz $M$ a partir de un subconjunto $\Omega$ de sus entradas. Sin hipótesis adicionales está mal planteado; lo que lo vuelve tratable es suponer que $M$ tiene \emph{rango bajo}. Minimizar el rango sujeto a las observaciones es NP-hard, y hay dos enfoques estándar. La relajación convexa reemplaza el rango por la norma nuclear y, si $\Omega$ es aleatorio y suficientemente grande, recupera $M$ con alta probabilidad \cite{candes-recht}. La factorización escribe $M=UV^*$ con $U$ y $V$ de pocas columnas y minimiza $\sum_{(i,j)\in\Omega}|M_{ij}-(UV^*)_{ij}|^2$ por descenso de gradiente. Es lo que se usa en la práctica porque escala a matrices enormes, pero el objetivo no es convexo: la pregunta central es cuándo su paisaje es \emph{benigno}, es decir, cuándo no tiene mínimos locales espurios donde el descenso por gradiente pueda quedar atrapado.
+
+\paragraph{El Netflix Prize.} El ejemplo canónico es la competencia que organizó Netflix entre 2006 y 2009, con un premio de un millón de dólares. Los datos eran una matriz de unos 480.000 usuarios $\times$ 17.000 películas con sólo el 1\% de las entradas observadas (unos 100 millones de calificaciones), y había que predecir las faltantes. La hipótesis de rango bajo dice que los gustos se explican por pocos factores latentes (preferencia por la acción, por el drama, por el humor\dots): cada usuario es un vector $u_i\in\mathbb{R}^r$, cada película un vector $v_j\in\mathbb{R}^r$, y la calificación es aproximadamente $\langle u_i,v_j\rangle$, con $r$ del orden de unas decenas. El ingrediente central de las soluciones ganadoras fue la factorización resuelta por descenso de gradiente estocástico, años antes de que existiera la teoría que hoy la justifica.
+
+\paragraph{La equivalencia.} Proviene de la identidad trigonométrica
+\[
+\sin(t-t') \;=\; \sin t\,\cos t' - \cos t\,\sin t'
+\]
+y de su compañera $\cos(t-t')=\cos t\cos t'+\sin t\sin t'$. Dada una configuración de fases $\theta$, sean $c=(\cos\theta_u)_{u\in V}$ y $s=(\sin\theta_u)_{u\in V}$. Las identidades dicen que las matrices de diferencias de fase se factorizan:
+\[
+S(\theta):=\bigl(\sin(\theta_u-\theta_v)\bigr)_{u,v}=s\,c^{T}-c\,s^{T},
+\qquad
+C(\theta):=\bigl(\cos(\theta_u-\theta_v)\bigr)_{u,v}=c\,c^{T}+s\,s^{T},
+\]
+de rango a lo sumo $2$ (en notación compleja, $C+iS=zz^*$ con $z_u=e^{i\theta_u}$, de rango uno). Consideremos el problema de \emph{sincronización de fases}: hay fases desconocidas $\theta^\star$ y, para cada arista $uv$ de $G$, se mide la diferencia $\theta^\star_u-\theta^\star_v$, es decir, las entradas $(u,v)$ de $C(\theta^\star)$ y $S(\theta^\star)$. Recuperar $\theta^\star$ (a menos de una rotación global) es entonces completar matrices de rango bajo con patrón de observaciones $\Omega=E$. El enfoque por factorización minimiza el error cuadrático en las entradas observadas y, usando otra vez las identidades, con $\varphi=\theta-\theta^\star$,
+\[
+\sum_{uv\in E}\Bigl[\bigl(C(\theta)-C(\theta^\star)\bigr)_{uv}^2+\bigl(S(\theta)-S(\theta^\star)\bigr)_{uv}^2\Bigr]
+\;=\;2\sum_{uv\in E}\bigl(1-\cos(\varphi_u-\varphi_v)\bigr)\;=\;2\,\mathcal{E}_G(\varphi).
+\]
+Así, el descenso por gradiente para este problema de completación es (salvo un factor constante) la dinámica de Kuramoto $\dot\varphi_u=\sum_v w_{uv}\sin(\varphi_v-\varphi_u)$, y sus mínimos globales son los estados sincronizados, que corresponden a recuperar $\theta^\star$. En consecuencia, \emph{$G$ sincroniza globalmente si y sólo si el problema de completación con patrón de observaciones $G$ tiene paisaje benigno}, y $\mu_c$ responde a la pregunta: ¿qué fracción de observaciones por nodo garantiza un paisaje benigno, independientemente de cómo estén distribuidas? Sin ruido la información sobra (basta propagar las fases por un árbol generador): lo que se pregunta es si el algoritmo local, que es el que se usa con datos ruidosos, la encuentra.
+
+\paragraph{Relevancia.} El problema de completación de matrices de rango bajo aparece en muchas aplicaciones más allá del problema de recomendación (Netflix). Aparece en cryo-EM, que reconstruye moléculas a partir de proyecciones en orientaciones desconocidas (Nobel de Química 2017), en la sincronización de relojes en redes distribuidas, en localización de sensores, en SLAM robótico y en alineamiento de imágenes.
+% En estas aplicaciones el patrón de mediciones no es aleatorio sino que lo impone la física del problema (qué sensores se comunican, qué imágenes se superponen), y la pregunta de peor caso que codifica $\mu_c$ es la natural.
+
+\end{document}

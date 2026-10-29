@@ -1,0 +1,321 @@
+\documentclass[usenames, dvipsnames, spanish, aspectratio=169]{beamer}
+
+\include{header}
+
+\usepackage{multimedia}
+\usepackage{hyperref}
+\usepackage{subfigure}
+
+\usepackage{multicol}
+\usepackage{bm}
+
+\usetikzlibrary{calc}
+
+
+
+\usepackage[spanish]{babel}
+
+\usepackage[sfdefault]{FiraSans}
+\input{tema_luciernagas}
+
+\newtheorem{proposition}[theorem]{Proposición}
+%\newtheorem{corollary}[theorem]{Corolario}
+
+
+\title{Conectividad crítica para la sincronización global en el modelo de Kuramoto}
+\author{ModEsto}
+\institute{Probabilidad y {\bf Mod}elización {\bf Esto}cástica\\ Investigathon Y-Hat
+% \vspace{.5cm}
+% \flushleft
+% Basada en trabajo en conjunto con C. de Vita (Buenos Aires), F. Cirelli (Buenos Aires), H. Vivas (Buenos Aires), J.F. Bonder (Buenos Aires), R. Huang (M\"unster) y Y. Zhang (Santa Fe Institute).\\
+}
+%\newcommand{\logotitulo}{\includegraphics[height=1.1cm]{logoExactas.jpg}}
+
+\date{}
+
+\begin{document}
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+\pagestyle{empty}
+
+
+\setbeamercolor{background canvas}{bg=noche}
+
+
+\frame{\frametitle{Aplausos}
+
+
+}
+
+\setbeamercolor{background canvas}{bg=black}
+
+
+\frame{\frametitle{Luciérnagas en Tailandia}
+
+\begin{center}
+\begin{tikzpicture}[remember picture,overlay]
+  \node []{\movie
+[
+height = 0.9\textheight,
+  width = 1.25\textwidth,
+  poster,
+  autostart,
+]
+{}{videos/Fireflies.mp4}
+  };
+\end{tikzpicture}
+\end{center}
+}
+
+
+
+\frame{\frametitle{Redes de neuronas}
+
+\begin{center}
+\begin{tikzpicture}[remember picture,overlay]
+  \node []{\movie
+[
+height = 0.45\textwidth,
+  width = \textwidth,
+  poster,
+  autostart,
+]
+{}{videos/neurons.m4v}
+  };
+\end{tikzpicture}
+\end{center}
+}
+
+\frame{\frametitle{Metrónomos}
+
+\begin{center}
+\begin{tikzpicture}[remember picture,overlay]
+  \node []{\movie
+[
+  height = 0.45\textwidth,
+  width = 1.1\textwidth,
+  poster,
+  autostart,
+  repeat,
+]
+{}{videos/Metronoms.mp4}
+  };
+\end{tikzpicture}
+\end{center}
+}
+
+
+\setbeamercolor{background canvas}{bg=crema}
+
+\frame{\frametitle{Sincronización en \dots}
+\beamerdefaultoverlayspecification{}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\punto Reacciones químicas.\\[4pt]
+\punto Poblaciones biológicas.\\[4pt]
+\punto Neurociencia.\\[4pt]
+\punto Superconductores.\\[4pt]
+\punto Células marcapasos del corazón.
+\end{column}
+\begin{column}{0.48\textwidth}
+\punto Luciérnagas.\\[4pt]
+\punto Lásers.\\[4pt]
+\punto Movimiento coordinado de robots, vehículos, grupos de animales.\\[4pt]
+\punto Redes móviles.\\[4pt]
+\punto Redes de sensado inalámbrico.
+\end{column}
+\end{columns}
+
+}
+
+\frame{\frametitle{Modelo de Kuramoto -- 1975}
+\beamerdefaultoverlayspecification{}
+
+
+\punto $G=(V,E)$ un grafo, $|V| = n$.\\[4pt]
+\punto Una fase $\theta_v \in \mathbb{T} = (-\pi,\pi]$ (el círculo) para cada vértice $v$.
+
+\pause
+\medskip
+
+\textbf{\underline{Energía:}}
+\begin{align*}
+\mathcal E_G(\theta):=\sum_{u \sim v} \big(1-\cos(\theta_u-\theta_v)\big)
+\end{align*}
+
+\pause
+
+\textbf{\underline{Gradient descent}} para converger a un mínimo \textbf{\underline{(local!)}}
+
+\begin{align*}
+\dot \theta  = -\nabla \mathcal E_G(\theta)
+% \qquad\Longleftrightarrow\qquad
+% \dot\theta_v = \sum_{u\in V} w_{uv}\sin(\theta_u-\theta_v).
+\end{align*}
+
+
+% \pause
+% Partículas en el círculo unidas por resortes:
+% $\mathcal E_G$ es la energía elástica, porque $|e^{i\theta_u}-e^{i\theta_v}|^2 = 2\big(1-\cos(\theta_u-\theta_v)\big)$.
+% \begin{column}{0.36\textwidth}
+% \centering
+% \begin{tikzpicture}
+% \def\Rad{1.7}
+% \draw[colresorte, line width=2.5pt] (0,0) circle (\Rad);
+% \coordinate (a) at (65:\Rad);
+% \coordinate (b) at (180:\Rad);
+% \coordinate (c) at (245:\Rad);
+% \coordinate (d) at (315:\Rad);
+% \draw[resorte] (b) to[bend left=8]  (a);
+% \draw[resorte] (b) to[bend right=8] (c);
+% \draw[resorte] (b) to[bend right=10] (d);
+% \draw[resorte] (a) to[bend left=6]  (c);
+% \draw[resorte] (a) to[bend left=6]  (d);
+% \foreach \p in {a,b,c,d} \node[particula] at (\p) {};
+% \end{tikzpicture}
+% \end{column}
+
+}
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+
+\frame{\frametitle{Descenso por gradiente y la geometría del paisaje de la energía}
+
+\begin{center}
+\includegraphics[width=\textwidth]{sgd.png}
+\end{center}
+
+\centerline{Dado $G$, ¿cuáles son los mínimos locales de $\mathcal E_G$?}
+
+}
+
+% \frame{\frametitle{Geometría del paisaje en alta dimensión}
+%
+% \begin{center}
+% \includegraphics[width=\textwidth]{sgdcross.png}
+% \end{center}
+%
+% Dado $G$, ¿cuáles son los mínimos locales de $\mathcal E_G$? ¿Bases de atracción?
+% }
+
+\setbeamercolor{background canvas}{bg=crema}
+
+\frame{\frametitle{Modelo de Kuramoto}
+
+
+
+{\bf\underline{Sincronización Global}}
+
+\begin{center}
+El único mínimo local de $\mathcal E_G$ es $\theta_u = \theta_v$ para todo $u,v \in V$.
+
+\end{center}
+}
+
+
+\frame{\frametitle{Sincronización global: ¿cuánta conectividad hace falta?}
+\beamerdefaultoverlayspecification{}
+
+%{\bf \underline{Def.:}} $G$ \emph{sincroniza globalmente} si los únicos mínimos locales de $\mathcal E_G$ son los estados sincronizados.
+
+\pause
+\bigskip
+\punto El grafo completo $K_n$ sincroniza globalmente (ejercicio).\\[4pt]
+\punto Intuición: más aristas $\Rightarrow$ más fácil sincronizar \pause (\textbf{\underline{falso!}}).
+
+\pause
+\bigskip
+\textbf{Conectividad:}\quad $\mu(G) = \dfrac{\min_{v\in V}\deg(v) + 1}{n}$.
+
+\pause
+\bigskip
+\textbf{Conectividad crítica:}\quad $\mu_c = \inf\bigl\{\mu \;:\; \text{\emph{todo} grafo con } \mu(G)\ge\mu \text{ sincroniza globalmente}\bigr\}$.
+
+}
+
+
+\frame{\frametitle{¿Cuánto vale $\mu_c$?}
+\beamerdefaultoverlayspecification{}
+
+\centering
+\begin{tikzpicture}[x=40cm, y=1cm, font=\footnotesize]
+  % eje
+  \draw[pizarra, line width=1pt, -{Stealth[length=6pt]}] (0,0) -- (0.365,0);
+  \foreach \v/\t in {0.7/0{.}7, 0.8/0{.}8, 0.9/0{.}9, 1.0/1} {
+    \draw[pizarra] ({\v-0.65},0.08) -- ({\v-0.65},-0.08);
+    \node[pizarra, below] at ({\v-0.65},-0.08) {$\t$};
+  }
+  \node[pizarra, right] at (0.365,0) {$\mu$};
+  \node[ambar!85!black, anchor=west, font=\small\bfseries] at (0,2.7) {Cotas superiores};
+
+  % cotas superiores (arriba)
+  \uncover<1->{
+    \fill[ambar] ({1.0-0.65},0) circle (2.6pt);
+    \node[above, align=center] at ({1.0-0.65},0.15) {$K_n$\\ (ejercicio)};
+  }
+  \uncover<2->{
+    \fill[ambar] ({0.9395-0.65},0) circle (2.6pt);
+    \node[above, align=center] at ({0.9395-0.65},0.15) {$0{.}9395$\\ Taylor 2012};
+  }
+  \uncover<3->{
+    \fill[ambar] ({0.7929-0.65},0) circle (2.6pt);
+    \fill[ambar] ({0.7889-0.65},0) circle (2.6pt);
+    \node[above, align=center] at ({0.791-0.65},0.15) {$\approx 0{.}79$\\ Ling--Xu--Bandeira 2019\\ Lu--Steinerberger 2020};
+  }
+  \uncover<4->{
+    \fill[ambar] ({0.75-0.65},0) circle (2.6pt);
+    \draw[ambar, thin] ({0.75-0.65},0.1) -- ({0.75-0.65},1.55);
+    \node[above, align=center] at ({0.75-0.65},1.5) {$3/4$\\ Kassabov--Strogatz--Townsend 2021};
+  }
+  % cotas inferiores (abajo)
+  \uncover<5->{
+    \fill[colresorte] ({0.6828-0.65},0) circle (2.6pt);
+    \fill[colresorte] ({0.6838-0.65},0) circle (2.6pt);
+    \fill[noche] ({0.6875-0.65},0) circle (2.6pt);
+    \draw[colresorte, thin] ({0.6875-0.65},-0.1) -- ({0.6875-0.65},-0.65);
+    \node[anchor=north west, align=left] at (0.0,-0.65)
+      {{\small\bfseries\color{colresorte} Cotas inferiores:} $0{.}6828 \to 0{.}6838 \to 11/16 = 0{.}6875$\\ Townsend--Stillman--Strogatz 2020, Yoneda--Tatsukawa--Teramae 2021, Canale 2022};
+  }
+  % el intervalo y la conjetura
+  \only<6>{
+    \fill[ambar, opacity=0.3] ({0.6875-0.65},-0.07) rectangle ({0.75-0.65},0.07);
+    \node[font=\small, align=left, anchor=north west] at (0,-1.75)
+      {\textbf{Conjetura} (Bandeira et al., 2025): $\mu_c = 3/4$.};
+  }
+  \only<7->{
+    \fill[ambar, opacity=0.3] ({0.6875-0.65},-0.07) rectangle ({0.742-0.65},0.07);
+    \draw[ambar!85!black, line width=1.4pt] ({0.742-0.65},0.2) -- ({0.742-0.65},-0.2);
+    \node[font=\Large\bfseries, ambar!85!black] at ({0.715-0.65},0.45) {?};
+    \node[font=\small, align=left, anchor=north west] at (0,-1.75)
+      {\textbf{Agosto 2026} (Lepsveridze--Zhang): $\mu_c \le 3/4 - \eta$.\quad \alert{\textbf{¡La conjetura es falsa!}}};
+  }
+\end{tikzpicture}
+
+}
+
+
+% Cierre
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[noche] (current page.south west) rectangle (current page.north east);
+  \coordinate (C) at ([xshift=-3.4cm]current page.east);
+  \draw[colresorte, line width=1pt] (C) circle (2.3cm);
+  \luciernagas{C}{2.3}{12}{7}
+  \node[anchor=west, text width=9cm, text=crema, align=left]
+    at ([xshift=1.1cm]current page.west) {%
+    {\fontsize{28}{34}\selectfont $\dfrac{11}{16}\;\le\;\mu_c\;\le\;\dfrac34-\eta$}\par
+    \vspace{6pt}{\color{ambar}\rule{3cm}{1.5pt}}\par
+    \vspace{8pt}{\large Un problema abierto.}\par
+    \vspace{14pt}{\large\bfseries\color{ambar} Dos semanas para achicar el intervalo\\ \dots\ o para explicarlo mejor que nadie.}\par
+    \vspace{14pt}{\small\color{crema!70} \textbf{A continuación}: más sincronización, las reglas del \\juego, y qué tiene que ver todo esto con Netflix\\ y los algoritmos de recomendación.}};
+\end{tikzpicture}
+\end{frame}
+
+
+% S. Strogatz:  You’ve certainly chosen a challenging one! Who knows, perhaps some clever new idea, with or without AI, will finally crack it. Please give the students my warmest wishes. I’ll be rooting for them, and I hope the Researchthon is a tremendous success!
+
+\end{document}

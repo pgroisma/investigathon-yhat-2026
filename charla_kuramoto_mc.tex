@@ -1,0 +1,641 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetheme[progressbar=frametitle, numbering=fraction, sectionpage=none]{metropolis}
+\usepackage[sfdefault]{FiraSans}
+\usefonttheme[onlymath]{serif}
+\input{tema_luciernagas}
+
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathcal{E}}
+
+\title[Kuramoto y matrix completion]{Conectividad crítica para la sincronización global\\ en el modelo de Kuramoto}
+%\subtitle{y su equivalencia con un problema de completación de matrices}
+\author{Investigathon YHat}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{El modelo}
+
+\begin{frame}{Sincronización, ahora en serio}
+%Ya vieron luciérnagas, metrónomos, neuronas, corazones y aplausos.
+%\medskip
+
+%¿Cómo se modela todo eso con una sola ecuación?
+%\medskip
+%\pause
+
+\textbf{Ingredientes:}
+\begin{itemize}
+    \item Un grafo finito simple $G=(V,E)$, con $n=|V|$ ``osciladores'' y matriz de adyacencia $(w_{uv})$: quién interactúa con quién.
+
+    \item Una fase $\theta_v \in \T = (-\pi,\pi]$ (extremos identificados) para cada vértice $v$:\\
+    en qué punto de su ciclo está cada oscilador.
+\end{itemize}
+\medskip
+\pause
+
+\textbf{Modelo de Kuramoto homogéneo} (osciladores idénticos):
+\[
+\dot\theta_v \;=\; \sum_{u \in V} w_{uv}\,\sin(\theta_u - \theta_v), \qquad v\in V.
+\]
+Cada oscilador se deja ``arrastrar'' por sus vecinos.
+\end{frame}
+
+\begin{frame}{La energía}
+Definimos la energía de una configuración $\theta = (\theta_v)_{v\in V}$:
+\[
+\boxed{\;\E_G(\theta) \;=\; \tfrac{1}{2}\sum_{u,v\in V} w_{uv}\bigl(1-\cos(\theta_u-\theta_v)\bigr)\;}
+\]
+\begin{itemize}
+    \item Cada arista $uv$ aporta $1-\cos(\theta_u-\theta_v) \in [0,2]$: vale $0$ si están en fase, $2$ si están en antifase.
+    \item $\E_G \ge 0$, y $\E_G(\theta) = 0 \iff \theta_u = \theta_v$ para toda arista $uv$ \\
+    ($\iff$ todos iguales, si $G$ es conexo).
+\end{itemize}
+\pause
+\medskip
+\textbf{Los minimizadores globales son los estados sincronizados.}
+\medskip
+
+Pregunta clave: ¿son los \emph{únicos} mínimos locales?
+\end{frame}
+
+\begin{frame}{Una imagen mecánica: partículas y resortes}
+\begin{columns}
+\begin{column}{0.42\textwidth}
+\centering
+\begin{tikzpicture}
+\def\Rad{2.4}
+\draw[colresorte, line width=2.5pt] (0,0) circle (\Rad);
+\coordinate (a) at (65:\Rad);
+\coordinate (b) at (180:\Rad);
+\coordinate (c) at (245:\Rad);
+\coordinate (d) at (315:\Rad);
+\draw[resorte] (b) to[bend left=8]  (a);
+\draw[resorte] (b) to[bend right=8] (c);
+\draw[resorte] (b) to[bend right=10] (d);
+\draw[resorte] (a) to[bend left=6]  (c);
+\draw[resorte] (a) to[bend left=6]  (d);
+\foreach \p in {a,b,c,d} \node[particula] at (\p) {};
+\node[above right] at (a) {$z_u = e^{i\theta_u}$};
+\end{tikzpicture}
+\end{column}
+\begin{column}{0.58\textwidth}
+\small
+\begin{itemize}
+    \item Cada oscilador es una \textbf{partícula} en el círculo unitario, en la posición $z_v = e^{i\theta_v}$.
+    \item Cada arista es un \textbf{resorte} (de longitud natural cero) entre dos partículas.
+\end{itemize}
+\pause
+Como $|z_u - z_v|^2 = 2\bigl(1-\cos(\theta_u-\theta_v)\bigr)$,
+\[
+\E_G(\theta) \;=\; \frac12\sum_{uv\in E} |z_u - z_v|^2
+\]
+\textbf{es exactamente la energía elástica de los resortes.}
+\pause
+\medskip
+
+Kuramoto: las partículas se deslizan (sin inercia) para aflojar los resortes, sin poder salirse del círculo.
+\medskip
+
+Sincronizar $=$ todas las partículas en el mismo punto.\\
+¿Pueden los resortes quedar \emph{trabados} en otra configuración?
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Kuramoto es un flujo gradiente}
+Calculemos el gradiente de la energía. Para cada $v$:
+\[
+\frac{\partial \E_G}{\partial \theta_v}
+\;=\; \tfrac{1}{2}\sum_{u} w_{uv}\,\sin(\theta_v-\theta_u)\cdot 2
+\;=\; \sum_{u} w_{uv}\,\sin(\theta_v-\theta_u)
+\;=\; -\sum_{u} w_{uv}\,\sin(\theta_u-\theta_v).
+\]
+\pause
+Comparando con la dinámica de Kuramoto:
+\[
+\dot\theta_v = \sum_u w_{uv} \sin(\theta_u - \theta_v) = -\frac{\partial \E_G}{\partial \theta_v}
+\qquad\Longrightarrow\qquad
+\boxed{\;\dot\theta = -\nabla \E_G(\theta)\;}
+\]
+\pause
+\medskip
+Consecuencias inmediatas:
+\begin{itemize}
+    \item La energía decrece a lo largo de las trayectorias: $\frac{d}{dt}\E_G(\theta(t)) = -\|\nabla\E_G\|^2 \le 0$.
+    \item Toda trayectoria converge a un punto crítico ($\nabla \E_G = 0$).
+    \item Genéricamente, converge a un \textbf{mínimo local}.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Descenso de gradiente}
+
+\begin{frame}{Interludio: descenso de gradiente}
+Para minimizar una función $f:\R^n\to\R$, el algoritmo más simple del mundo:
+\[
+x_{k+1} = x_k - h\,\nabla f(x_k)
+\qquad \text{(la versión discreta de } \dot x = -\nabla f(x)\text{)}.
+\]
+\pause
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\textbf{Está en todas partes:}
+\begin{itemize}
+    \item Entrenamiento de redes neuronales:\\ \emph{todo} el deep learning es descenso de gradiente (estocástico) sobre funciones no convexas con millones de parámetros.
+    \item Cuadrados mínimos, regresión, ajuste de modelos.
+    \item Física: sistemas que disipan energía.
+\end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{tikzpicture}[scale=0.85]
+\draw[->] (-0.2,0) -- (6,0);
+\draw[->] (0,-0.2) -- (0,3.2);
+\draw[thick, colresorte] plot[smooth] coordinates
+  {(0.2,3) (1,1.2) (1.8,1.9) (2.6,0.5) (3.4,1.6) (4.3,1.0) (5.2,2.6)};
+\fill[ambar] (1,1.2) circle (2.5pt) node[below] {\scriptsize local};
+\fill[ambar] (4.3,1.0) circle (2.5pt) node[below] {\scriptsize local};
+\fill[noche] (2.6,0.5) circle (2.5pt) node[below] {\scriptsize global};
+\node at (3,3) {\scriptsize paisaje de $f$};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\pause
+\medskip
+\textbf{El problema:} si $f$ no es convexa, el descenso puede quedar atrapado en un mínimo local espurio.
+\end{frame}
+
+\begin{frame}{Paisajes benignos}
+\textbf{Definición informal.} El paisaje de $f$ es \emph{benigno} si no tiene mínimos locales espurios
+(todo mínimo local es global) y sus puntos silla son ``escapables''.
+\medskip
+
+En un paisaje benigno, el descenso de gradiente \textbf{funciona}: desde casi cualquier punto inicial llega al mínimo global.
+\medskip
+\pause
+
+\textbf{Pregunta central de optimización no convexa moderna:}
+\begin{center}
+\emph{¿Qué problemas tienen paisaje benigno, y por qué?}
+\end{center}
+\medskip
+\pause
+
+Nuestro problema es exactamente de este tipo:
+\begin{center}
+$G$ \emph{sincroniza globalmente} $\;\stackrel{\text{def}}{\iff}\;$ los únicos mínimos locales de $\E_G$ son los sincronizados\\[2pt]
+$\iff$ el paisaje de $\E_G$ es benigno.
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{El grafo completo}
+
+\begin{frame}{La cuenta: el grafo completo sincroniza (I)}
+En $K_n$ todos interactúan con todos ($w_{uv}=1$, $u\ne v$). Definimos el \textbf{parámetro de orden}
+\[
+r(\theta) \;=\; \frac{1}{n}\sum_{u\in V} e^{i\theta_u} \;\in\; \mathbb{C},
+\qquad |r| \in [0,1].
+\]
+Es el \textbf{centro de masa} de las partículas $e^{i\theta_u}$ en el círculo.
+\pause
+\medskip
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=1.35]
+  \draw[colresorte, line width=1pt] (0,0) circle (1);
+  \fill[pizarra] (0,0) circle (0.8pt);
+  \foreach \a in {38,47,52,58,61,66,70,75,83,90}{
+    \fill[ambar, opacity=0.25] (\a:1) circle (3.2pt);
+    \fill[ambar] (\a:1) circle (1.7pt);
+  }
+  \draw[noche, line width=1.6pt, -{Stealth[length=6pt]}] (0,0) -- (0.423,0.867);
+  \node[noche, right, font=\small] at (0.3,0.45) {$r$};
+\end{tikzpicture}
+
+\small Fases casi sincronizadas: $|r| \approx 0{.}97$.
+\end{column}
+\pause
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=1.35]
+  \draw[colresorte, line width=1pt] (0,0) circle (1);
+  \foreach \a in {5,41,77,118,152,190,224,262,301,333}{
+    \fill[ambar, opacity=0.25] (\a:1) circle (3.2pt);
+    \fill[ambar] (\a:1) circle (1.7pt);
+  }
+  \draw[noche, line width=1.6pt, -{Stealth[length=3pt]}] (0,0) -- (0.019,-0.010);
+  \fill[noche] (0,0) circle (1.3pt);
+  \node[noche, below, font=\small] at (0,-0.05) {$r$};
+\end{tikzpicture}
+
+\small Fases desparramadas: $|r| \approx 0{.}02$.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{La cuenta: el grafo completo sincroniza (II)}
+Con el parámetro de orden $r(\theta) = \frac{1}{n}\sum_{u} e^{i\theta_u}$, la \textbf{identidad mágica}:
+\[
+n^2 |r|^2 = \Bigl|\sum_u e^{i\theta_u}\Bigr|^2
+= \sum_{u,v} e^{i(\theta_u-\theta_v)}
+= \sum_{u,v} \cos(\theta_u-\theta_v),
+\]
+\pause
+y entonces (sumar la diagonal no cambia nada porque $1-\cos 0 = 0$):
+\[
+\E_{K_n}(\theta) = \tfrac12\sum_{u,v}\bigl(1-\cos(\theta_u-\theta_v)\bigr)
+= \frac{n^2}{2} - \frac{n^2}{2}|r|^2
+= \boxed{\;\frac{n^2}{2}\bigl(1-|r(\theta)|^2\bigr)\;}
+\]
+\medskip
+¡Minimizar la energía es \textbf{maximizar} $|r|^2$! El flujo de Kuramoto en $K_n$ empuja las fases a alinearse con $r$.
+\end{frame}
+
+\begin{frame}{La cuenta: el grafo completo sincroniza (III)}
+\textbf{Puntos críticos.} Escribiendo $r = |r|e^{i\psi}$, la condición $\partial\E/\partial\theta_v = 0$ es
+\[
+0 = \sum_u \sin(\theta_u - \theta_v) = \operatorname{Im}\bigl(e^{-i\theta_v}\, n\,r\bigr) = n|r|\sin(\psi - \theta_v)
+\qquad \text{para todo } v.
+\]
+\pause
+Dos casos:
+\begin{itemize}
+    \item \textbf{$r \neq 0$:} entonces $\sin(\psi-\theta_v)=0$ para todo $v$, o sea $\theta_v \in \{\psi,\, \psi+\pi\}$.\\
+    Digamos que $m$ osciladores están en $\psi+\pi$ (``en contra''). Si $m \ge 1$, girar uno de ellos hacia $\psi$ \textbf{aumenta} $|r|$ y baja la energía: no es mínimo local (es silla).\\
+    Si $m=0$: todos en $\psi$ $\Rightarrow$ \textbf{sincronizado}. \checkmark
+    \pause
+    \item \textbf{$r = 0$:} entonces $\E = \tfrac{n^2}{2}$, el \emph{máximo} posible. Moviendo una sola fase se logra $|r|>0$, así que tampoco es mínimo local.
+\end{itemize}
+\pause
+\medskip
+\textbf{Conclusión:} los únicos mínimos locales de $\E_{K_n}$ son los estados sincronizados.
+$K_n$ sincroniza globalmente. \hfill (Ejercicio: completar los detalles de segundo orden.)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{El problema abierto}
+
+\begin{frame}{¿Y si el grafo no es completo?}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+El ciclo $C_n$ ($n\ge 5$) \textbf{no} sincroniza globalmente: tiene mínimos locales no triviales, los \emph{twisted states}
+\[
+\theta_v = \frac{2\pi q\, v}{n}, \qquad q = \pm 1, \pm 2, \dots
+\]
+Las fases dan $q$ vueltas completas al recorrer el ciclo: cada oscilador está ``casi alineado'' con sus vecinos, pero globalmente hay un enrollamiento que el flujo local no puede deshacer.
+\medskip
+
+Moraleja: la obstrucción a sincronizar es \textbf{topológica}.
+\end{column}
+\begin{column}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=1.5]
+\foreach \k in {0,...,7}{
+  \coordinate (p\k) at ({360/8*\k}:1.4);
+}
+\foreach \k [evaluate=\k as \next using {int(mod(\k+1,8))}] in {0,...,7}{
+  \draw[gray] (p\k) -- (p\next);
+}
+\foreach \k in {0,...,7}{
+  \fill (p\k) circle (1.5pt);
+  \draw[-{Stealth[length=5pt]}, thick, ambar!90!black]
+    (p\k) -- ++({360/8*\k}:0.42);
+}
+\node at (0,-2.1) {\scriptsize Twisted state $q=1$ en $C_8$};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\medskip
+\pause
+Intuición: \textbf{más aristas $\Rightarrow$ más fácil sincronizar} (falsa!). ¿Se puede cuantificar?
+\end{frame}
+
+\begin{frame}{La pregunta: conectividad crítica}
+Definimos la \textbf{conectividad normalizada}
+\[
+\mu(G) \;=\; \frac{\min_{v\in V}\deg(v) + 1}{n} \;\in\; (0,1]
+\]
+($\mu(K_n)=1$; el $+1$ equivale a agregar un self-loop en cada vértice).
+\pause
+\medskip
+
+\textbf{Conectividad crítica:}
+\[
+\mu_c \;=\; \inf\bigl\{\mu \;:\; \text{\emph{todo} grafo finito simple con } \mu(G)\ge\mu \text{ sincroniza globalmente}\bigr\}.
+\]
+\medskip
+Ojo: es una pregunta de \textbf{peor caso}. No alcanza con que los grafos ``típicos'' sincronicen; hay que vencer al grafo más tramposo con ese grado mínimo.
+\pause
+\medskip
+
+\begin{center}
+\Large \textbf{Problema abierto: determinar $\mu_c$.}
+\end{center}
+\end{frame}
+
+\begin{frame}{Estado del arte: cotas superiores}
+``Conectividad alta $\Rightarrow$ sincronización'', por análisis local de los puntos críticos:
+\medskip
+\begin{itemize}
+    \item Ejercicio (lo acabamos de hacer): $\mu_c \le 1$;
+    \item Taylor (2012): $\mu_c \le 0{.}9395$;
+    \item Ling, Xu, Bandeira (2019): $\mu_c \le 0{.}7929$;
+    \item Lu, Steinerberger (2020): $\mu_c \le 0{.}7889$;
+    \item Kassabov, Strogatz, Townsend (2021): $\mu_c \le 3/4$;
+    \item \textbf{Lepsveridze, Zhang (agosto 2026):} $\mu_c \le 3/4 - \eta$, con $\eta > 0$ constante absoluta.
+\end{itemize}
+\medskip
+\pause
+El último resultado tiene dos meses, y \textbf{refuta} la conjetura $\mu_c = 3/4$ (Bandeira et al., 2025). Además prueba: cerca de $3/4$, el único obstáculo posible es un \emph{clustering en 4 grupos} alrededor de $\{0, \pi/2, \pi, 3\pi/2\}$.
+\end{frame}
+
+\begin{frame}{Estado del arte: cotas inferiores}
+``Existe un grafo denso que no sincroniza'': construcciones explícitas con mínimos locales twisted.
+\medskip
+\begin{itemize}
+    \item Townsend, Stillman, Strogatz (2020): $\mu_c \ge 0{.}6828$ (grafos circulantes);
+    \item Yoneda, Tatsukawa, Teramae (2021): $\mu_c \ge 0{.}6838$ (optimización de twisted states);
+    \item Canale (2022): $\mu_c \ge 11/16 = 0{.}6875$ (construcción no circulante).
+\end{itemize}
+\pause
+\medskip
+\textbf{Estado actual (octubre 2026):}
+\[
+\boxed{\;\frac{11}{16} \;\le\; \mu_c \;\le\; \frac34 - \eta \;<\; 0{.}75\;}
+\]
+\begin{center}
+El intervalo está abierto. \textbf{El objetivo del proyecto es contribuir a estrecharlo}\\ u obtener cualquier información sobre él.
+\end{center}
+\pause
+Dato de contexto: los grafos \emph{aleatorios} y los expansores sincronizan con conectividad muchísimo menor (Abdalla et al.\ 2022). La dificultad está en el peor caso, no en el típico.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Matrix completion}
+
+\begin{frame}{Cambio de escenario: completación de matrices}
+\textbf{Problema.} Reconstruir una matriz $M$ viendo sólo un subconjunto $\Omega$ de sus entradas.
+\medskip
+
+Sin hipótesis, imposible. Lo que lo vuelve tratable: suponer que $M$ tiene \textbf{rango bajo}.
+\pause
+\medskip
+
+Dos enfoques:
+\begin{itemize}
+    \item \textbf{Relajación convexa:} minimizar la norma nuclear. Garantías si $\Omega$ es aleatorio y grande (Candès--Recht 2009). Elegante, pero caro.
+    \item \textbf{Factorización:} escribir $M = UV^*$ con pocas columnas y minimizar
+    \[
+    \sum_{(i,j)\in\Omega} \bigl|M_{ij} - (UV^*)_{ij}\bigr|^2
+    \qquad \text{por descenso de gradiente.}
+    \]
+    Es lo que se usa en la práctica (escala a matrices enormes)\dots\ pero \textbf{no es convexo}.
+\end{itemize}
+\pause
+\medskip
+La pregunta central, de nuevo: ¿cuándo el paisaje es \textbf{benigno}?
+\end{frame}
+
+\begin{frame}{El Netflix Prize (2006--2009)}
+\begin{itemize}
+    \item Premio: \textbf{un millón de dólares} a quien mejorara en 10\% el predictor de calificaciones de Netflix.
+    \item Datos: matriz de $\sim$480.000 usuarios $\times$ 17.000 películas, con sólo el \textbf{1\%} de las entradas observadas ($\sim$100 millones de calificaciones). Predecir el resto.
+\end{itemize}
+\pause
+\medskip
+\textbf{Hipótesis de rango bajo:} los gustos se explican por pocos factores latentes (acción, drama, humor, \dots):
+\[
+\text{usuario } i \mapsto u_i \in \R^r, \qquad
+\text{película } j \mapsto v_j \in \R^r, \qquad
+\text{calificación} \approx \langle u_i, v_j\rangle,
+\]
+con $r$ del orden de decenas.
+\pause
+\medskip
+
+El ingrediente central de las soluciones ganadoras: \textbf{factorización + descenso de gradiente estocástico} --- años antes de que existiera la teoría que hoy lo justifica.
+\end{frame}
+
+\begin{frame}{La equivalencia (I): matrices de fases tienen rango bajo}
+Dada una configuración $\theta$, sean $c = (\cos\theta_u)_u$ y $s=(\sin\theta_u)_u$. Las identidades
+\[
+\sin(t-t') = \sin t\cos t' - \cos t \sin t', \qquad
+\cos(t-t') = \cos t\cos t' + \sin t\sin t'
+\]
+dicen que las matrices de \emph{diferencias de fase} se factorizan:
+\[
+S(\theta) := \bigl(\sin(\theta_u-\theta_v)\bigr)_{u,v} = s\,c^{T} - c\,s^{T},
+\qquad
+C(\theta) := \bigl(\cos(\theta_u-\theta_v)\bigr)_{u,v} = c\,c^{T} + s\,s^{T}.
+\]
+\pause
+\medskip
+Ambas tienen rango $\le 2$. Mejor aún, en notación compleja, con $z_u = e^{i\theta_u}$:
+\[
+C + iS = z\,z^* \qquad \text{¡rango uno!}
+\]
+\end{frame}
+
+\begin{frame}{La equivalencia (II): sincronización de fases como completación}
+\textbf{Problema de sincronización de fases:} hay fases desconocidas $\theta^\star$, y para cada \emph{arista} $uv$ de $G$ se mide la diferencia $\theta^\star_u - \theta^\star_v$, es decir, las entradas $(u,v)$ de $C(\theta^\star)$ y $S(\theta^\star)$.
+\medskip
+
+Recuperar $\theta^\star$ (salvo rotación global) $=$ \textbf{completar una matriz de rango bajo} con patrón de observaciones $\Omega = E$.
+\pause
+\medskip
+
+Enfoque por factorización: minimizar el error cuadrático en lo observado. Con $\varphi = \theta - \theta^\star$:
+\[
+\sum_{uv\in E}\Bigl[\bigl(C(\theta)-C(\theta^\star)\bigr)_{uv}^2 + \bigl(S(\theta)-S(\theta^\star)\bigr)_{uv}^2\Bigr]
+\;=\; 2\sum_{uv\in E}\bigl(1-\cos(\varphi_u-\varphi_v)\bigr)
+\;=\; 2\,\E_G(\varphi).
+\]
+\pause
+\medskip
+\textbf{¡El objetivo de completación ES la energía de Kuramoto!} El descenso de gradiente para completar la matriz es, salvo constante, la dinámica de Kuramoto.
+\end{frame}
+
+
+\begin{frame}{¿A quién le importa completar matrices?}
+Mucho más allá de Netflix:
+\medskip
+\begin{itemize}
+    \item \textbf{Cryo-EM:} reconstruir moléculas a partir de proyecciones en orientaciones desconocidas (Nobel de Química 2017).
+    \item \textbf{Relojes en redes distribuidas:} sincronizar a partir de mediciones de desfase entre pares.
+    \item \textbf{Localización de sensores}, \textbf{SLAM robótico}, \textbf{alineamiento de imágenes}.
+\end{itemize}
+\medskip
+\pause
+En estas aplicaciones el patrón de mediciones \textbf{no es aleatorio}: lo impone la física del problema (qué sensores se comunican, qué imágenes se superponen). La pregunta de peor caso que codifica $\mu_c$ es la natural.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{La competencia}
+
+\begin{frame}{La competencia: 3 semanas}
+\textbf{Objetivo realista:} aportes modestos y concretos, no resolver el problema completo.
+\medskip
+
+\textbf{Prerrequisitos:} ODEs básicas (equilibrios, estabilidad), álgebra lineal (autovalores, Hessiano), grafos elementales, Python o Julia. Papers en inglés.
+\pause
+\medskip
+
+\textbf{Calentamiento} (antes de elegir dirección):
+\begin{enumerate}
+    \item Simular el flujo gradiente en $K_n$: verificar que siempre sincroniza.
+    \item Lo mismo en $C_n$ ($n\ge5$): encontrar los twisted states estables y verificar su estabilidad con el espectro del Hessiano.
+    \item Construir $C_{n,k}$ ($k$ vecinos de cada lado, grado $2k$): los twisted states siguen siendo equilibrios. ¿Hasta qué $k$ hay alguno estable?
+\end{enumerate}
+\medskip
+Quien completa esto ya tiene el pipeline básico: \textbf{simulador + test de estabilidad}.
+\end{frame}
+
+\begin{frame}{Direcciones de trabajo (A: la principal)}
+\textbf{A. Buscar nuevas familias de grafos que no sincronicen.}\\
+Todo $G$ con $\mu(G) > 11/16$ y un mínimo local no sincronizado mejora la cota inferior.
+\medskip
+\begin{itemize}
+    \item \textbf{Búsqueda exhaustiva} en grafos chicos ($n \sim 10$--$15$) con \texttt{nauty} + verificación numérica.\\
+    \emph{Spoiler:} el resultado esperable es negativo (los twisted states necesitan ``circunferencia''). Un negativo bien documentado vale, y el pipeline se reutiliza.
+    \item \textbf{Búsqueda estocástica:} algoritmos genéticos, simulated annealing, hill climbing.
+    \item \textbf{Reinforcement learning:} un agente que agrega y quita aristas (Wagner 2021 encontró contraejemplos combinatorios así).
+    \item \textbf{Graph Neural Networks} como heurística rápida para guiar la búsqueda.
+    \item \textbf{Operaciones de producto} (lex, strong, zig-zag) sobre catálogos de grafos base.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Direcciones de trabajo (B, C, D)}
+\textbf{B. Explicitar la constante $\eta$ de Lepsveridze--Zhang} \emph{(difícil, opcional).}\\
+Los autores dicen que un valor explícito es derivable de la prueba, pero no lo persiguen. Versión acotada: cuantificar las constantes de \emph{una} sección del argumento.
+\medskip
+\pause
+
+\textbf{C. Geometría de los obstáculos cerca de $3/4$.}\\
+Cerca de $3/4$ el único obstáculo es el clustering en 4 grupos. ¿Hasta qué $\mu$ puede haber mínimos con $\ell = 2, 3, 5, \dots$ clusters? ¿Clusters no equidistantes? ¿Winding $\ge 2$?
+\medskip
+\pause
+
+\textbf{D. Variantes:} grafos ponderados ($w_{uv}\in[0,1]$, la idea de Canale), cotas para $\mu_c$ restringido a subfamilias de grafos, Kuramoto--Sakaguchi (con desfases).
+\end{frame}
+
+\begin{frame}{Direcciones de trabajo (E: exposición creativa)}
+\textbf{E. Explicaciones creativas.}
+\begin{itemize}
+    \item Exposiciones sobre Kuramoto, sus aplicaciones, completación de matrices, sistemas de recomendación.
+    \item Explicaciones de resultados conocidos (sincronización global, paisajes benignos).
+    \item Re-interpretaciones y \textbf{demostraciones alternativas o simplificadas} de resultados conocidos --- por ejemplo, la cota de Taylor $0{.}9395$, la más accesible.
+\end{itemize}
+\medskip
+\pause
+Cualquier formato: artículo, blog, video, juego interactivo, \dots
+\medskip
+
+En el espíritu del \textbf{Mathathon} (Tao et al., 2026): \emph{``Old Problems, New Proofs''} --- la comprensión y la exposición matemática valen tanto como resolver problemas.
+\medskip
+\pause
+\begin{center}
+\emph{Recomendación general: la mayoría de los equipos debería empezar por A o E.}
+\end{center}
+\end{frame}
+
+\begin{frame}{Qué cuenta como resultado}
+Tres tipos de contribución --- todos valiosos, cualquiera puede ganar:
+\medskip
+\begin{itemize}
+    \item \textbf{Rigurosos} (difícil). Para mejorar la cota inferior hace falta un \emph{certificado}: Hessiano definido positivo en el ortogonal a la rotación global (¡siempre hay un autovalor nulo!), o forma cerrada.\\
+    Y ojo: ``no encontramos mínimos espurios'' \textbf{no} certifica sincronización global (cuencas de atracción chicas).
+    \pause
+    \item \textbf{Heurísticos y computacionales.} Candidatos con fuerte evidencia numérica, conjeturas respaldadas por experimentos, negativos bien documentados. \textbf{Serán plenamente valorados sin prueba rigurosa.} Lo que se pide: honestidad metodológica --- qué está demostrado, qué es evidencia, con qué confianza.
+    \pause
+    \item \textbf{Exposiciones y pruebas novedosas} (dirección E), en cualquier formato.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Niveles de logro (para calibrar expectativas)}
+\begin{itemize}
+    \item \textbf{Básico.} A--D: pipeline reproducible que reproduce lo conocido (twisted states, construcción de Canale). E: explicación correcta y clara de lo conocido.
+    \item \textbf{Esperado.} A--D: búsqueda sistemática documentada (conclusiones positivas \emph{o negativas}), candidatos con análisis Hessiano, resultados parciales en B--D. E: exposición original con visualizaciones o simulaciones propias.
+    \item \textbf{Excepcional.} A--D: mejora de cota con certificado, valor o cota para $\eta$, resultado analítico nuevo. E: reinterpretación o demostración alternativa, o una forma excepcionalmente novedosa de presentar el problema.
+\end{itemize}
+\medskip
+\pause
+\begin{center}
+\emph{Nadie espera el nivel excepcional en 3 semanas.\\ Si ocurre, es un resultado de investigación genuino.}
+\end{center}
+\end{frame}
+
+\begin{frame}{Entrega y evaluación}
+\textbf{Se entrega:}
+\begin{enumerate}
+    \item \textbf{Informe} ($\le 5$ páginas): qué se intentó, qué se obtuvo, qué está demostrado vs.\ conjeturado. Incluye una sección \emph{obligatoria}: la declaración de uso de IA.
+    \item \textbf{Repositorio}: código reproducible, experimentos, historiales de LLM.
+    \item \textbf{Póster + presentación de 15 minutos.}
+\end{enumerate}
+\emph{El póster y la presentación comunican; el informe y el repositorio permiten completar la evaluación.}
+\pause
+\medskip
+
+\textbf{Se valora, en orden:} (i) corrección y claridad del informe; (ii) profundidad del aporte (un negativo sistemático vale como un positivo de alcance similar, o como una gran exposición); (iii) reproducibilidad; (iv) originalidad.
+\end{frame}
+
+\begin{frame}{Uso de inteligencia artificial}
+\begin{center}
+\Large Se puede usar IA \textbf{libremente}, para todo lo que quieran.
+\end{center}
+\medskip
+\pause
+La contrapartida es \textbf{obligatoria}:
+\begin{itemize}
+    \item Declarar el uso de forma transparente y detallada en el informe:\\ qué herramientas, para qué tareas, con qué prompts relevantes.
+    \item Incluir en el repositorio los historiales de interacción que contribuyeron al resultado.
+\end{itemize}
+\medskip
+\textbf{No se penaliza usar IA; se penaliza no declararlo.}\\
+Lo que se evalúa, en última instancia, es la \emph{comprensión demostrada} por el equipo.
+\pause
+\medskip
+
+\textbf{Prueba piloto:} esta competencia es también una exploración de cómo hacer y evaluar ciencia en la era de la IA. Documentar honestamente ese proceso --- qué funcionó, qué no, dónde la IA ayudó y dónde estorbó --- es en sí mismo un aporte bienvenido.
+\end{frame}
+
+\begin{frame}{Para cerrar}
+\begin{center}
+{\Large
+\[
+\frac{11}{16} \;\le\; \mu_c \;\le\; \frac{3}{4} - \eta
+\]}
+\bigskip
+
+Un problema abierto, con frente computacional, teórico y expositivo.\\
+
+Cota mejorada hace \textbf{dos meses}. Nadie sabe el valor de $\mu_c$.
+\bigskip
+\pause
+
+Un mismo objeto visto desde dos lados:\\
+osciladores que se sincronizan $\;\longleftrightarrow\;$ matrices que se completan.
+\bigskip
+\pause
+
+{\large \textbf{El intervalo los espera.}}
+\bigskip
+
+\normalsize (Documento de la propuesta: definiciones, referencias, direcciones y reglas completas.)
+\end{center}
+\end{frame}
+
+\end{document}

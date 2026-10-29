@@ -1,0 +1,22 @@
+# Lista blanca: se ignora todo salvo lo que se nombra abajo
+*
+!.gitignore
+!README.md
+
+# Propuesta
+!propuesta_kuramoto_mc.tex
+!propuesta_kuramoto_mc.pdf
+
+# Charla larga
+!charla_kuramoto_mc.tex
+!charla_kuramoto_mc.pdf
+
+# Charla corta
+!charla_corta_kuramoto.tex
+!charla_corta_kuramoto.pdf
+
+# Archivos compartidos por las charlas
+!tema_luciernagas.tex
+!header.tex
+!logoExactas.jpg
+!sgd.png

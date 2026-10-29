@@ -1,0 +1,80 @@
+%%%%% Tema "luciérnagas de noche" %%%%%
+% Se carga con \input{tema_luciernagas} después de \usetheme{metropolis} y de las fuentes.
+% Opcional: \newcommand{\logotitulo}{\includegraphics[height=1.2cm]{logo}} antes de \begin{document}.
+
+\usetikzlibrary{arrows.meta,decorations.pathmorphing}
+
+\definecolor{noche}{RGB}{22,34,56}
+\definecolor{ambar}{RGB}{242,165,65}
+\definecolor{crema}{RGB}{250,247,240}
+\definecolor{pizarra}{RGB}{40,48,62}
+\definecolor{colresorte}{RGB}{95,125,160}
+\definecolor{particula}{RGB}{165,180,205}
+
+\tikzset{
+  resorte/.style={colresorte, line width=0.9pt, decorate,
+    decoration={coil, aspect=0.75, segment length=9pt, amplitude=6pt,
+                pre length=6pt, post length=6pt}},
+  particula/.style={circle, draw=black!75, line width=1.2pt, fill=particula,
+                    minimum size=9pt, inner sep=0pt}
+}
+
+\setbeamercolor{background canvas}{bg=crema}
+\setbeamercolor{normal text}{fg=pizarra, bg=crema}
+\setbeamercolor{frametitle}{bg=noche, fg=crema}
+\setbeamercolor{progress bar}{fg=ambar, bg=noche!80}
+\setbeamercolor{structure}{fg=noche}
+\setbeamercolor{alerted text}{fg=ambar!85!black}
+\setbeamercolor{itemize item}{fg=ambar}
+\setbeamercolor{enumerate item}{fg=ambar!85!black}
+\setbeamertemplate{itemize item}{\tikz[baseline=-0.6ex]{\fill[ambar,opacity=0.25] (0,0) circle (3.2pt); \fill[ambar] (0,0) circle (1.7pt);}}
+\setbeamertemplate{itemize subitem}{\tikz[baseline=-0.6ex]\draw[ambar] (0,0) circle (1.5pt);}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.9cm, text margin right=0.9cm}
+
+% Viñeta suelta, para listas sin overlays
+\newcommand{\punto}{\usebeamertemplate{itemize item}\hspace{0.4em}}
+
+% Luciérnagas: #1 centro, #2 radio, #3 dispersión de fases (grados), #4 semilla
+\newcommand{\luciernagas}[4]{%
+  \pgfmathsetseed{#4}%
+  \foreach \i in {1,...,36}{%
+    \pgfmathsetmacro{\ang}{90 + #3*rand}%
+    \fill[ambar, opacity=0.18, shift={(#1)}] (\ang:#2) circle (5pt);%
+    \fill[ambar, shift={(#1)}] (\ang:#2) circle (1.8pt);%
+  }}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[noche] (current page.south west) rectangle (current page.north east);
+    \coordinate (C) at ([xshift=-3.7cm]current page.east);
+    \draw[colresorte, line width=1pt] (C) circle (2.6cm);
+    \luciernagas{C}{2.6}{170}{3}
+    \node[anchor=south west, text width=8.6cm, text=crema, font=\LARGE\bfseries, align=left]
+      at ([xshift=1.1cm, yshift=0.2cm]current page.west) {\inserttitle};
+    \draw[ambar, line width=1.5pt] ([xshift=1.1cm, yshift=-0.15cm]current page.west) -- ++(3cm,0);
+    \node[anchor=north west, text width=8.6cm, text=ambar, font=\large, align=left]
+      (autor) at ([xshift=1.1cm, yshift=-0.45cm]current page.west) {\insertauthor};
+    \node[anchor=north west, text width=8.6cm, text=crema!75, align=left]
+      at ([yshift=-0.15cm]autor.south west) {\insertinstitute};
+    \ifdefined\logotitulo
+      \node[anchor=south west, fill=white, rounded corners=4pt, inner sep=5pt]
+        at ([xshift=1.1cm, yshift=0.8cm]current page.south west) {\logotitulo};
+    \fi
+  \end{tikzpicture}}
+
+% Portadas de sección: las fases se van sincronizando a medida que avanza la charla
+\AtBeginSection{%
+  \begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[noche] (current page.south west) rectangle (current page.north east);
+    \coordinate (C) at ([xshift=-3.7cm]current page.east);
+    \draw[colresorte, line width=1pt] (C) circle (2.2cm);
+    \pgfmathsetmacro{\dispersion}{180 - 27*\value{section}}
+    \luciernagas{C}{2.2}{\dispersion}{5}
+    \node[anchor=south west, text=ambar, font=\fontsize{40}{40}\selectfont\bfseries]
+      at ([xshift=1.1cm, yshift=0.3cm]current page.west) {\thesection};
+    \node[anchor=north west, text width=8cm, text=crema, font=\huge\bfseries]
+      at ([xshift=1.1cm, yshift=0.1cm]current page.west) {\insertsectionhead};
+  \end{tikzpicture}
+  \end{frame}}
